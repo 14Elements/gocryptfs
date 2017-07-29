@@ -235,14 +235,14 @@ func (fs *FS) Rmdir(path string, context *fuse.Context) (code fuse.Status) {
 }
 
 // OpenDir implements pathfs.FileSystem
-func (fs *FS) OpenDir(dirName string, context *fuse.Context) ([]fuse.DirEntry, fuse.Status) {
+func (fs *FS) OpenDirIno(dirName string, context *fuse.Context) ([]fuse.DirEntryIno, fuse.Status) {
 	tlog.Debug.Printf("OpenDir(%s)", dirName)
 	cDirName, err := fs.encryptPath(dirName)
 	if err != nil {
 		return nil, fuse.ToStatus(err)
 	}
 	// Read ciphertext directory
-	cipherEntries, status := fs.FileSystem.OpenDir(cDirName, context)
+	cipherEntries, status := fs.FileSystem.OpenDirIno(cDirName, context)
 	if cipherEntries == nil {
 		return nil, status
 	}
@@ -264,7 +264,7 @@ func (fs *FS) OpenDir(dirName string, context *fuse.Context) ([]fuse.DirEntry, f
 	}
 
 	// Decrypted directory entries
-	var plain []fuse.DirEntry
+	var plain []fuse.DirEntryIno
 	var errorCount int
 	// Filter and decrypt filenames
 	for i := range cipherEntries {

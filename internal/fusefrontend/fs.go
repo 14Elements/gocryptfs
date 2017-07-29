@@ -52,7 +52,7 @@ func NewFS(args Args) *FS {
 	}
 
 	return &FS{
-		FileSystem:    pathfs.NewLoopbackFileSystem(args.Cipherdir),
+		FileSystem:    pathfs.NewLoopbackInoFileSystem(args.Cipherdir),
 		args:          args,
 		nameTransform: nameTransform,
 		contentEnc:    contentEnc,
